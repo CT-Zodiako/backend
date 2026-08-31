@@ -6,11 +6,14 @@ import { PrismaPg } from '@prisma/adapter-pg';
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
 
   constructor() {
-    const adapter = new PrismaPg({
-      connectionString: process.env.DATABASE_URL
-    },
-      { schema: 'proyecto11' }
-    )
+    const connectionString = process.env.DATABASE_URL;
+    const schema = connectionString
+      ? new URL(connectionString).searchParams.get('schema') ?? 'public'
+      : 'public';
+    const adapter = new PrismaPg(
+      { connectionString },
+      { schema },
+    );
     super({ adapter });
   }
 
