@@ -12,15 +12,19 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   create(@Body() dto: CreateCategoryDto) { return this.categoriesService.create(dto); }
 
   @Get()
+  @HttpCode(HttpStatus.OK)
   findAll(@Query() query: QueryCategoryDto) { return this.categoriesService.findAll(query); }
 
   @Get(':id')
+  @HttpCode(HttpStatus.OK)
   findOne(@Param('id', new ParseUUIDPipe()) id: string) { return this.categoriesService.findOne(id); }
 
   @Patch(':id')
+  @HttpCode(HttpStatus.OK)
   update(@Param('id', new ParseUUIDPipe()) id: string, @Body() dto: UpdateCategoryDto) {
     return this.categoriesService.update(id, dto);
   }

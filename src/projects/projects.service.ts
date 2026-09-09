@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '../../generated/prisma/client.js';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
@@ -9,7 +9,17 @@ import { QueryProjectDto } from './dto/query-project.dto';
 export class ProjectsService {
   constructor(private readonly prisma: PrismaService) { }
 
-  async create(dto: CreateProjectDto) { return await this.prisma.project.create({ data: dto }); }
+  async create(dto: CreateProjectDto) {
+    try {
+      return await this.prisma.project.create({ data: dto });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2003') {
+        throw new NotFoundException('Category edition not found');
+      }
+      throw error;
+    }
+  }
+
   findAll(query: QueryProjectDto) {
     const where: Prisma.ProjectWhereInput = {};
     if (query.name !== undefined) where.name = { contains: query.name };
