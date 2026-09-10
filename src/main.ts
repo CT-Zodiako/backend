@@ -13,6 +13,7 @@ async function bootstrap() {
     .setTitle('EAFI API')
     .setDescription('API de categorías, períodos, ediciones y proyectos')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);

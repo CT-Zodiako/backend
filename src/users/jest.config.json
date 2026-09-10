@@ -1,0 +1,11 @@
+{
+  "rootDir": "../..",
+  "testEnvironment": "node",
+  "testRegex": "test/users\\.(service\\.spec|e2e-spec)\\.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "^(\\.{1,2}/.*)\\.js$": "$1"
+  }
+}
