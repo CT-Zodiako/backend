@@ -26,8 +26,19 @@ describe('Authentication units', () => {
     const users = new UsersService({ user: { findUnique } } as never);
     await users.findCredentialsByUsername('alice');
     expect(findUnique).toHaveBeenCalledWith({ where: { username: 'alice' }, select: {
-      id: true, username: true, passwordHash: true, role: true, createdAt: true, updatedAt: true,
+      id: true, passwordHash: true,
     } });
+  });
+
+  it('logs in with only id and passwordHash from persistence', async () => {
+    const id = 'c5e5c8c5-c44f-4a43-bdd8-78056694f6df';
+    const findCredentialsByUsername = jest.fn().mockResolvedValue({ id, passwordHash: hash });
+    const jwt = new JwtService({ secret: 'test-only-secret', signOptions: { algorithm: 'HS256', expiresIn: 60 } });
+    const service = new AuthService({ findCredentialsByUsername } as unknown as UsersService, jwt);
+    const result = await service.login('alice', 'test password');
+    expect(findCredentialsByUsername).toHaveBeenCalledWith('alice');
+    expect(result).toEqual({ access_token: expect.any(String), token_type: 'Bearer', expires_in: 60 });
+    expect(jwt.verify(result.access_token)).toEqual({ sub: id, iat: expect.any(Number), exp: expect.any(Number) });
   });
 
   it('returns indistinguishable errors for wrong and unknown credentials', async () => {

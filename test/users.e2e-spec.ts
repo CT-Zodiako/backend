@@ -55,6 +55,8 @@ describe('Users HTTP contract', () => {
     { ...dto, username: '   ' },
     { ...dto, username: 123 },
     { ...dto, password: '' },
+    { ...dto, password: 'short' },
+    { ...dto, password: '        ' },
     { ...dto, password: 123 },
     { ...dto, password: null },
     { ...dto, role: 'OWNER' },
